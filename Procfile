@@ -1,5 +1,3 @@
-release: python manage.py makemigrations --no-input
-release: python manage.py migrate --no-input
-release: python manage.py runserver
-
-web: gunicorn projectone.wsgi --log-file
+web: gunicorn website.wsgi:application --log-file -
+python manage.py collectstatic --noinput
+manage.py migrate
