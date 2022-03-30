@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-gf&z25t72-snmi+jqu18+8wd3dw-2%ecdtm=2$mp(b9s=vwkyo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'project-one-test.herokuapp.com']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -177,8 +178,7 @@ SIMPLE_JWT = {
 
 
 CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://sub.example.com",
+    "https://project-one-test.herokuapp.com",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
