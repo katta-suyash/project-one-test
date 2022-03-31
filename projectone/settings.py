@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gf&z25t72-snmi+jqu18+8wd3dw-2%ecdtm=2$mp(b9s=vwkyo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'project-one-test.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', 'project-one-test.herokuapp.com', '*']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
@@ -179,8 +179,8 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "https://project-one-test.herokuapp.com",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 

@@ -9,9 +9,11 @@ from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-
+from account.models import MyUser
 
 # Function to Generate Token Manually
+
+
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -70,17 +72,27 @@ class UserProfileUpdateView(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
 
-    # def post(self, request, format=None):
-    #     serializer = UserProfileUpdateSerializer(
-    #         data=request.data, context={'user': request.user})
-    #     serializer.is_valid(raise_exception=True)
-    #     return Response({'msg': 'Profile Updated Successfully'}, status=status.HTTP_200_OK)
-
     def patch(self, request, format=None):
         user = self.request.user
-        serializer = UserProfileUpdateSerializer(
-            user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("User ID>>>>>", user.id)
+        userobject = MyUser.objects.filter(id=user.id).first()
+        print("User Object>>>>>", userobject)
+
+        try:
+            userobject.firstName = request.data.get(
+                "firstName", userobject.firstName)
+            userobject.lastName = request.data.get(
+                "lastName", userobject.lastName)
+            userobject.email = request.data.get("email", userobject.email)
+            userobject.mobileNumber = request.data.get(
+                "mobileNumber", userobject.mobileNumber)
+            userobject.dateOfBirth = request.data.get(
+                "dateOfBirth", userobject.dateOfBirth)
+            userobject.gender = request.data.get("gender", userobject.gender)
+            userobject.profilePhoto = request.data.get(
+                "profilePhoto", userobject.profilePhoto)
+            userobject.save()
+        except Exception as e:
+            print(e)
+
+        return Response({'msg': "Patch Update Success!"}, status=status.HTTP_200_OK)

@@ -1,4 +1,6 @@
 *.pyc
+db.sqlite3
+media/
 .vscode/
 .idea/
 user/
@@ -6,3 +8,4 @@ package/
 assets/
 venv/*
 .env
+**/migrations/*

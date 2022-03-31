@@ -30,7 +30,7 @@ def user_profile_image_handler(instance, filename):
 
 # User Manager Class
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, first_name, password=None, password2=None):
+    def create_user(self, email, firstName, password=None, password2=None):
         """
         Creates and saves a User with the given email, name and password.
         """
@@ -39,36 +39,21 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-            first_name=first_name,
+            firstName=firstName,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    # def update_user(self, **kwargs):
-    #     user = self.model(
-    #         email=self.normalize_email(kwargs['email']),
-    #         first_name=kwargs['first_name'],
-    #         last_name=kwargs['last_name'],
-    #         mobile_number=kwargs['mobile_number'],
-    #         date_of_birth=kwargs['date_of_birth'],
-    #         gender=kwargs['gender'],
-    #         profile_photo=kwargs['profile_photo'],
-    #     )
-
-    #     user.set_password(kwargs['password'])
-    #     user.save(using=self._db)
-    #     return user
-
-    def create_superuser(self, email, first_name, password=None):
+    def create_superuser(self, email, firstName, password=None):
         """
-        Creates and saves a superuser with the given email, first_name and password.
+        Creates and saves a superuser with the given email, firstName and password.
         """
         user = self.create_user(
             email,
             password=password,
-            first_name=first_name,
+            firstName=firstName,
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -82,13 +67,13 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100, null=True, blank=True, )
-    mobile_number = models.CharField(
+    firstName = models.CharField(max_length=100)
+    lastName = models.CharField(max_length=100, null=True, blank=True, )
+    mobileNumber = models.CharField(
         max_length=50, null=True, blank=True, validators=[phonenumber_validator])
-    date_of_birth = models.DateField(null=True, blank=True, )
+    dateOfBirth = models.DateField(null=True, blank=True, )
     gender = models.CharField(max_length=7, null=True, blank=True, )
-    profile_photo = models.ImageField(
+    profilePhoto = models.ImageField(
         upload_to=user_profile_image_handler, null=True, blank=True, )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -98,7 +83,7 @@ class MyUser(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name']
+    REQUIRED_FIELDS = ['firstName']
 
     def __str__(self):
         return self.email
