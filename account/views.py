@@ -10,19 +10,8 @@ from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from account.models import MyUser
-
-# Function to Generate Token Manually
-
-
-def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
-
-# User Registration View
+from projectone.utility import get_tokens_for_user
+from projectone.utility.utils import success_response, error_response, validation_error_response
 
 
 class UserRegistrationView(APIView):
@@ -30,11 +19,12 @@ class UserRegistrationView(APIView):
 
     def post(self, request, format=None):
         serializer = UserRegistrationSerializers(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            token = get_tokens_for_user(user)
-            return Response({'message': 'Registration Success!', 'token': token}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            return validation_error_response(errors=e)
+        user = serializer.save()
+        return success_response(message='Registration Success!', extra_data={"token": get_tokens_for_user(user)})
 
 
 # User Login View
@@ -45,17 +35,19 @@ class UserLoginView(APIView):
 
         serializer = UserLoginSerializer(data=request.data)
 
-        if serializer.is_valid(raise_exception=True):
-            email = serializer.data.get('email')
-            password = serializer.data.get('password')
-            user = authenticate(email=email, password=password)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            return validation_error_response(errors=e)
 
-            if user is not None:
-                token = get_tokens_for_user(user)
-                return Response({'msg': 'Login Success', 'token': token}, status=status.HTTP_200_OK)
-            else:
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        user = authenticate(email=email, password=password)
 
-                return Response({'errors': {'non_field_errors': ['Email or Password is Incorrect']}}, status=status.HTTP_404_NOT_FOUND)
+        if user is not None:
+            return success_response(message='LOGIN_SUCCESS', extra_data={"token": get_tokens_for_user(user)})
+        else:
+            return error_response(message='Email or Password is Incorrect', code=400)
 
 
 class UserProfileView(APIView):
@@ -63,9 +55,13 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        serializer = UserProfileSerializer(request.user)
-        # if serializer.is_valid(raise_exception=True):
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        try:
+            serializer = UserProfileSerializer(request.user)
+        except Exception as e:
+            return validation_error_response(errors=e)
+
+        return success_response(data=serializer.data, message='Data Fetched Successfully!')
 
 
 class UserProfileUpdateView(APIView):
@@ -94,5 +90,7 @@ class UserProfileUpdateView(APIView):
             userobject.save()
         except Exception as e:
             print(e)
+            return error_response(message="Patch Update Success!", code=400)
 
-        return Response({'msg': "Patch Update Success!"}, status=status.HTTP_200_OK)
+        return success_response(message="Patch Update Success!")
+        # return Response({'msg': "Patch Update Success!"}, status=status.HTTP_200_OK)
