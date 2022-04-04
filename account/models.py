@@ -30,7 +30,7 @@ def user_profile_image_handler(instance, filename):
 
 # User Manager Class
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, firstName, password=None, password2=None):
+    def create_user(self, email, firstName, lastName=None, password=None, password2=None, mobileNumber=None, dateOfBirth=None, gender=None, profilePhoto=None):
         """
         Creates and saves a User with the given email, name and password.
         """
