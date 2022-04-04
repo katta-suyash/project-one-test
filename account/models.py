@@ -69,8 +69,10 @@ class MyUser(AbstractBaseUser):
     )
     firstName = models.CharField(max_length=100)
     lastName = models.CharField(max_length=100, null=True, blank=True, )
+    # mobileNumber = models.CharField(
+    #     max_length=50, null=True, blank=True, validators=[phonenumber_validator])
     mobileNumber = models.CharField(
-        max_length=50, null=True, blank=True, validators=[phonenumber_validator])
+        max_length=50, null=True, blank=True)
     dateOfBirth = models.DateField(null=True, blank=True, )
     gender = models.CharField(max_length=7, null=True, blank=True, )
     profilePhoto = models.ImageField(
